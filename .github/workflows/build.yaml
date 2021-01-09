@@ -12,6 +12,8 @@ jobs:
       - name: Print Current Directory
         run: pwd
       - name: Check DOTNET Cli
-        run: dotnet
+        run: dotnet build
+      - name: List Filed in Directory
+        run: ls TrickingLibrary.Api/ -R
       - name: Check NPM Cli
-        run: npm         
+        run: npm -v         
