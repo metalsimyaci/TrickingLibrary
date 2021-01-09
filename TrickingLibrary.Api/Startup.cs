@@ -7,9 +7,13 @@ namespace TrickingLibrary.Api
 {
     public class Startup
     {
+        private const string CORS_POLICY_ALL = "All";
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+            services.AddCors(s =>
+                s.AddPolicy(CORS_POLICY_ALL, s => s.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod()));
+            services.AddSingleton<TrickingStore>();
         }
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
@@ -18,7 +22,7 @@ namespace TrickingLibrary.Api
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseCors(o => o.WithOrigins("localhost").AllowAnyHeader().AllowAnyOrigin());
+            app.UseCors(CORS_POLICY_ALL);
             app.UseRouting();
             app.UseEndpoints(endpoints =>
             {

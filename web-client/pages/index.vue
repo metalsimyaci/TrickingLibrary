@@ -8,71 +8,21 @@
       <v-card>
         <v-card-title class="headline">
           {{ message }}
-        </v-card-title>
-        <v-card-text>
-          <p>Vuetify is a progressive Material Design component framework for Vue.js. It was designed to empower
-            developers to create amazing applications.</p>
-          <p>
-            For more information on Vuetify, check out the <a
-            href="https://vuetifyjs.com"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            documentation
-          </a>.
-          </p>
-          <p>
-            If you have questions, please join the official <a
-            href="https://chat.vuetifyjs.com/"
-            target="_blank"
-            rel="noopener noreferrer"
-            title="chat"
-          >
-            discord
-          </a>.
-          </p>
-          <p>
-            Find a bug? Report it on the github <a
-            href="https://github.com/vuetifyjs/vuetify/issues"
-            target="_blank"
-            rel="noopener noreferrer"
-            title="contribute"
-          >
-            issue board
-          </a>.
-          </p>
-          <p>Thank you for developing with Vuetify and I look forward to bringing more exciting features in the
-            future.</p>
-          <div class="text-xs-right">
-            <em><small>&mdash; John Leider</small></em>
+
+
+          <div v-if="tricks">
+            <p v-for="(item, index)  in tricks">
+              {{ item.name }}-{{index}}
+            </p>
           </div>
-          <hr class="my-3">
-          <a
-            href="https://nuxtjs.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Nuxt Documentation
-          </a>
-          <br>
-          <a
-            href="https://github.com/nuxt/nuxt.js"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Nuxt GitHub
-          </a>
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer/>
-          <v-btn
-            color="primary"
-            nuxt
-            to="/inspire"
-          >
-            Continue
-          </v-btn>
-        </v-card-actions>
+          <div>
+            <v-text-field label="Tricking Name" v-model="trickName"/>
+            <v-btn @click="saveTrick">Save Trick</v-btn>
+          </div>
+
+          <v-btn @click="reset">Reset Message</v-btn>
+          <v-btn @click="resetTricks">Reset Tricks</v-btn>
+        </v-card-title>
       </v-card>
     </v-col>
   </v-row>
@@ -82,20 +32,57 @@
 import Logo from '~/components/Logo.vue'
 import VuetifyLogo from '~/components/VuetifyLogo.vue'
 import https from "https";
+import {mapState, mapActions, mapMutations} from 'vuex';
+
 export default {
   components: {
     Logo,
     VuetifyLogo
   },
   data: () => ({
-    message: ""
+    trickName: ""
   }),
-  async asyncData({$axios}) {
-    const agent = new https.Agent({ rejectUnauthorized: false });
-    return await $axios.get("https://localhost:5001/api/home", { httpsAgent: agent})
-      .then(({data}) => {
-        return {message: data};
-      });
+  // async asyncData({$axios}) {
+  //   const agent = new https.Agent({ rejectUnauthorized: false });
+  //   return await $axios.get("https://localhost:5001/api/home", { httpsAgent: agent})
+  //     .then(({data}) => {
+  //       return {message: data};
+  //     });
+  // }
+  async asyncData(){
+    // await this.fetchMessage();
+    // await this.fetchTricks();
+  },
+  computed: {
+    ...mapState({
+      message: state => state.message
+    }),
+    ...mapState('tricks',{
+      tricks: state => state.tricks
+    })
+  },
+  // async fetch(){
+  //   await this.$store.dispatch("fetchMessage" );
+  // },
+  methods: {
+    ...mapMutations([
+      'reset'
+    ]),
+    ...mapMutations('tricks',{
+      resetTricks: 'reset'
+    }),
+    ...mapActions('tricks', ['createTrick','fetchTricks']),
+    ...mapActions(['fetchMessage']),
+    async saveTrick() {
+      await this.createTrick({trick: {name: this.trickName}});
+      console.log("ssss",this.tricks);
+      const sssssss=this.tricks;
+    },
+
+  },
+  async created(){
+      await this.fetchMessage();
+      await this.fetchTricks();
   }
 }
 </script>
