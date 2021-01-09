@@ -7,7 +7,11 @@ jobs:
     name: Build
     runs-on: ubuntu-latest
     steps:
-      - name: Printer
+      - name: Pull code
+        uses: actions/checkout@v2
+      - name: Print Current Directory
         run: pwd
-      - name: List files in directory
-        run: ls
+      - name: Check DOTNET Cli
+        run: dotnet
+      - name: Check NPM Cli
+        run: npm         
